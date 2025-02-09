@@ -1,13 +1,13 @@
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Annotated, List
-from database import engine, SessionLocal
+from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
 
-import models
+from .models import Base, Ship
 
 app = FastAPI()
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 
 class ShipCreate(BaseModel):
@@ -39,7 +39,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.post("/ships", response_model=ShipResponse)
 def create_ship(ship: ShipCreate, db: db_dependency):
-    db_ship = models.Ship(
+    db_ship = Ship(
         vessel_type=ship.vessel_type, fuel_type=ship.fuel_type, distance=ship.distance
     )
     db.add(db_ship)
@@ -50,13 +50,13 @@ def create_ship(ship: ShipCreate, db: db_dependency):
 
 @app.get("/ships", response_model=List[ShipResponse])
 def get_all_ships(db: db_dependency):
-    ships = db.query(models.Ship).all()
+    ships = db.query(Ship).all()
     return ships
 
 
 @app.get("/ships/{ship_id}", response_model=ShipResponse)
 def get_ship(ship_id: int, db: db_dependency):
-    ship = db.query(models.Ship).filter(models.Ship.id == ship_id).first()
+    ship = db.query(Ship).filter(Ship.id == ship_id).first()
 
     if ship is None:
         raise HTTPException(status_code=404, detail="Ship not found")
