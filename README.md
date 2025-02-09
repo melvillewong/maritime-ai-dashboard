@@ -4,6 +4,6 @@
 
 ## Setup
 
-1. `Python3 -m venv .venv` to isolate project dependencies in virtual environment
-2. `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows), to activate vm
-3. `pip install -r requirements.txt` to install required dependencies
+1. `python3 -m venv backend/.env` to isolate project dependencies in virtual environment
+2. `source backend/.env/bin/activate` (Linux/MacOS) or `.venv\Scripts\activate` (Windows), to activate VM
+3. `python3 -m pip install -r backend/requirements.txt` to install required dependencies
