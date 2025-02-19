@@ -36,6 +36,8 @@ const FuelInput: React.FC<{ onSubmit: (vesselData: any) => void }> = ({ onSubmit
     const [ladenVLSFO, setLadenVLSFO] = useState<number>(18);
     const [sector, setSector] = useState<string>('dp');
     const [fuelType, setFuelType] = useState<string>('bs');
+    const [fuelCost, setFuelCost] = useState<number>();
+
 
     const handleSubmit = () => {
         onSubmit({
@@ -46,6 +48,7 @@ const FuelInput: React.FC<{ onSubmit: (vesselData: any) => void }> = ({ onSubmit
             ladenVLSFO,
             sector,
             fuelType,
+            fuelCost
         });
     };
 
@@ -92,6 +95,8 @@ const FuelInput: React.FC<{ onSubmit: (vesselData: any) => void }> = ({ onSubmit
                 onChange={(e) => setLadenVLSFO(Number(e.target.value))}
                 margin="normal"
             />
+            <TextField label="Fuel Cost ($/mt)" type="number" fullWidth value={fuelCost} onChange={(e) => setFuelCost(Number(e.target.value))} />
+
 
             <h3 style={{fontFamily: "Times New Roman", border: "2px solid", borderRadius: "20px", backgroundColor: "lightgreen", color: "black", fontSize: "larger", textAlign: "center", padding: "2px"}}>Route Configuration</h3>
             <FormControl fullWidth margin="normal">

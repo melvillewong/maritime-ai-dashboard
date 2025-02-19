@@ -1,50 +1,96 @@
-// src/components/EmissionsCalculation.tsx
 import React from 'react';
 import { emissionsFactors } from '../utils/emissionsFactors';
 
 type EmissionsProps = {
-    vesselData: any;
+    vesselData: {
+        fuelType: string;
+        ballastVLSFO: number;
+        ladenVLSFO: number;
+        ballastSpeed: number;
+        ladenSpeed: number;
+        dwt: number;
+        sector: string;
+        fuelCost: number;
+    };
 };
 
 const EmissionsCalculation: React.FC<EmissionsProps> = ({ vesselData }) => {
-    const { ballastSpeed, ballastVLSFO, ladenSpeed, ladenVLSFO, dwt, sector, fuelType, fuelCost } = vesselData;
+    const { fuelType, ballastVLSFO, ladenVLSFO, ballastSpeed, ladenSpeed, dwt, sector } = vesselData;
 
-    const emissionsFactor = emissionsFactors[fuelType as keyof typeof emissionsFactors];
+    // Retrieve emissions factor & default fuel cost
+    const fuelData = emissionsFactors[fuelType as keyof typeof emissionsFactors];
+    const emissionsFactor = fuelData.factor;
+   // const defaultFuelCost = fuelData.cost;
 
-    // Adjust ballast and laden consumption based on speed, DWT, and sector type
-    let ballastConsumption = ballastVLSFO * (ballastSpeed / 11) * (dwt / 50000);
-    let ladenConsumption = ladenVLSFO * (ladenSpeed / 11) * (dwt / 50000);
+    // Adjust consumption based on DWT (assuming 50,000 DWT is the baseline)
+    const dwtAdjustment = dwt / 50000;
 
-    // Adjustments based on sector type (example: tanker sectors consume more)
-    if (sector === 'dt' || sector === 'ct') {
-        ballastConsumption *= 1.2; // Example multiplier for tankers
-        ladenConsumption *= 1.2;   // Example multiplier for tankers
-    } else if (sector === 'lng') {
-        ballastConsumption *= 0.8; // Example adjustment for LNG sector
-        ladenConsumption *= 0.8;
-    }
+    // Sector-based fuel consumption adjustment
+    let sectorMultiplier = 1;
+    if (sector === 'dt' || sector === 'ct') sectorMultiplier = 1.2;  // Tankers consume more
+    else if (sector === 'lng') sectorMultiplier = 0.8;  // LNG vessels consume less
 
+    // Calculate fuel consumption
+    const ballastConsumption = ballastVLSFO * ballastSpeed * dwtAdjustment * sectorMultiplier;
+    const ladenConsumption = ladenVLSFO * ladenSpeed * dwtAdjustment * sectorMultiplier;
     const totalConsumption = ballastConsumption + ladenConsumption;
 
-    // Emissions calculation
+    // Emissions & Fuel Cost Calculations
     const emissions = emissionsFactor * totalConsumption;
+   // const finalFuelCost = fuelCost > 0 ? fuelCost : defaultFuelCost; // Allow user to override fuel cost
+    //const totalFuelCost = totalConsumption * finalFuelCost;
 
     return (
-        <div>
-            <h2 style={{fontFamily: "Times New Roman", border: "2px solid", borderRadius: "20px", backgroundColor: "lightgreen", color: "black", fontSize: "large", textAlign: "center", padding: "2px"}}>Emissions Calculation</h2>
-            <p style={{fontFamily: "Times New Roman", color: "#333", fontSize: "medium", padding: "2px",  marginBottom: "15px", lineHeight: "1.6", paddingLeft: "10px"}}>Total CO2 Emissions: {emissions.toFixed(2)} kg CO2</p>
+        <div style={{
+            padding: "20px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "10px",
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+            maxWidth: "600px",
+            margin: "auto",
+            textAlign: "center",
+        }}>
+            <h2 style={headerStyle}>Emissions Calculation</h2>
 
-            <h3 style={{fontFamily: "Times New Roman", border: "2px solid", borderRadius: "20px", backgroundColor: "lightgreen", color: "black", fontSize: "large", textAlign: "center", padding: "2px"}}>Fuel Consumption Details</h3>
-            <p style={{fontFamily: "Times New Roman",color: "#333", fontSize: "medium", padding: "2px",  marginBottom: "15px", lineHeight: "1.6", paddingLeft: "10px"}}>Ballast Fuel Consumption: {ballastConsumption.toFixed(2)} mt/day</p>
-            <p style={{fontFamily: "Times New Roman",color: "#333", fontSize: "medium", padding: "2px",  marginBottom: "15px", lineHeight: "1.6", paddingLeft: "10px"}}>Laden Fuel Consumption: {ladenConsumption.toFixed(2)} mt/day</p>
+            <div style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                padding: "10px",
+                margin: "10px 0",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+            }}>
+                <h3>Total CO₂ Emissions:</h3>
+                <p style={valueStyle}>{emissions.toFixed(2)} kg CO₂</p>
+            </div>
 
-            <h3 style={{fontFamily: "Times New Roman",border: "2px solid", borderRadius: "20px", backgroundColor: "lightgreen", color: "black", fontSize: "large", textAlign: "center", padding: "2px"}}>Fuel Cost Calculation</h3>
-            <p style={{fontFamily: "Times New Roman",color: "#333", fontSize: "medium", padding: "2px",  marginBottom: "15px", lineHeight: "1.6", paddingLeft: "10px"}}>Total Fuel Cost: {(fuelCost * totalConsumption * 365).toFixed(2)} USD/year</p>
-
-            <h3 style={{fontFamily: "Times New Roman",border: "2px solid", borderRadius: "20px", backgroundColor: "lightgreen", color: "black", fontSize: "large", textAlign: "center", padding: "2px"}}>FuelEU Penalty</h3>
-            <p style={{fontFamily: "Times New Roman",color: "#333", fontSize: "medium", padding: "2px",  marginBottom: "15px", lineHeight: "1.6", paddingLeft: "10px"}}>Penalty: {emissions > 10000 ? 'High Penalty' : 'Low Penalty'}</p>
+            <div style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                padding: "10px",
+                margin: "10px 0",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+            }}>
+                  </div>
         </div>
     );
+};
+
+
+
+const headerStyle = {
+    fontFamily: "Arial, sans-serif",
+    color: "#333",
+    fontSize: "1.8rem",
+};
+
+
+
+const valueStyle = {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    color: "#003366",
 };
 
 export default EmissionsCalculation;
