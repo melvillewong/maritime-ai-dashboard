@@ -4,7 +4,7 @@ from .base_model import (
     TripCreate,
     ShipTripCreate,
 )
-from .models import Ship, ShipTrip, Trip
+from .models import Fuel, Ship, ShipTrip, Trip
 from .calculation import (
     calc_fuel_consumed,
     calc_fuel_consumed_with_weather,
@@ -82,7 +82,7 @@ def get_all_trips(db: db_dependency):
     trips = db.query(Trip).all()
 
     if len(trips) == 0:
-        raise HTTPException(status_code=404, detail="Trip no found")
+        raise HTTPException(status_code=404, detail="Trip not found")
     return trips
 
 
@@ -90,5 +90,13 @@ def get_all_trip_ship(db: db_dependency):
     ship_trip = db.query(ShipTrip).all()
 
     if len(ship_trip) == 0:
-        raise HTTPException(status_code=404, detail="Record no found")
+        raise HTTPException(status_code=404, detail="Record not found")
     return ship_trip
+
+
+def get_all_fuels(db: db_dependency):
+    fuels = db.query(Fuel).all()
+
+    if len(fuels) == 0:
+        raise HTTPException(status_code=404, detail="fuel not found")
+    return fuels

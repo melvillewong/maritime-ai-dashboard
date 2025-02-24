@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from .base_model import (
+    FuelResponse,
     ShipCreate,
     ShipResponse,
     TripCreate,
@@ -12,6 +14,7 @@ from .crud import (
     create_ship,
     create_ship_trip,
     create_trip,
+    get_all_fuels,
     get_all_ships,
     get_all_trip_ship,
     get_all_trips,
@@ -23,6 +26,16 @@ from .dependencies import db_dependency
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
+
+origins = ["http://localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/ships", response_model=ShipResponse)
@@ -58,3 +71,8 @@ def read_all_trips(db: db_dependency):
 @app.get("/ship-trip", response_model=List[ShipTripResponse])
 def read_all_trip_ship(db: db_dependency):
     return get_all_trip_ship(db=db)
+
+
+@app.get("/fuels", response_model=List[FuelResponse])
+def read_all_fuels(db: db_dependency):
+    return get_all_fuels(db=db)

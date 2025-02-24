@@ -38,3 +38,9 @@ class ShipTripResponse(BaseModel):
     time: float
     fuel_consumed: float
     fuel_consumed_inc_weather: float
+
+
+class FuelResponse(BaseModel):
+    name: str
+    co2_factor: float
+    cost: float

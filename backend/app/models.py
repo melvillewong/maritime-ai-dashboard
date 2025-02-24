@@ -37,3 +37,11 @@ class ShipTrip(Base):
 
     ship = relationship("Ship", back_populates="trips")
     trip = relationship("Trip", back_populates="ships")
+
+
+class Fuel(Base):
+    __tablename__ = "fuels"
+
+    name: Mapped[str] = mapped_column(String, primary_key=True)
+    co2_factor: Mapped[float] = mapped_column(Float, nullable=False)
+    cost: Mapped[float] = mapped_column(Float, nullable=True)
