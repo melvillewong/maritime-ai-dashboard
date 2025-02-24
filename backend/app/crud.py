@@ -100,3 +100,11 @@ def get_all_fuels(db: db_dependency):
     if len(fuels) == 0:
         raise HTTPException(status_code=404, detail="fuel not found")
     return fuels
+
+
+def get_fuel(fuel_name: str, db: db_dependency):
+    fuel = db.query(Fuel).filter(Fuel.name == fuel_name).first()
+
+    if fuel is None:
+        raise HTTPException(status_code=404, detail="Ship not found")
+    return fuel

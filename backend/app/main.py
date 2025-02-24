@@ -18,6 +18,7 @@ from .crud import (
     get_all_ships,
     get_all_trip_ship,
     get_all_trips,
+    get_fuel,
     get_ship,
 )
 from .database import engine
@@ -76,3 +77,8 @@ def read_all_trip_ship(db: db_dependency):
 @app.get("/fuels", response_model=List[FuelResponse])
 def read_all_fuels(db: db_dependency):
     return get_all_fuels(db=db)
+
+
+@app.get("/fuels/{fuel_name}", response_model=FuelResponse)
+def read_fuel(fuel_name: str, db: db_dependency):
+    return get_fuel(fuel_name=fuel_name, db=db)
