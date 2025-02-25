@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
+import { emissionsFactors } from "../utils/emissionsFactors";
 
 type EmissionsProps = {
   vesselData: {
@@ -14,13 +15,22 @@ type EmissionsProps = {
   };
 };
 
-const fetchFuel = async (fuelName: string): Promise<number> => {
+type VesselProp = {
+  deadweight_mt: number;
+  fuel_type: string;
+  ballast_speed_knts: number;
+  ballast_vlsfo_mt_day: number;
+  laden_speed_knts: number;
+  laden_vlsfo_mt_day: number;
+  sector: string;
+};
+
+const postVessel = async (vessel: VesselProp): Promise<string> => {
   try {
-    const res = await api.get(`/fuels/${fuelName}`);
-    const result = parseFloat(res.data.co2_factor);
-    return result;
+    const res = await api.post(`/vessels`, vessel);
+    return res.status >= 200 && res.status < 300 ? "OK" : res.statusText;
   } catch (error) {
-    throw new Error("Fuel not found " + error);
+    throw new Error("Error: " + error);
   }
 };
 
@@ -35,32 +45,41 @@ const EmissionsCalculation: React.FC<EmissionsProps> = ({ vesselData }) => {
     sector,
   } = vesselData;
 
+  const vessel_data = {
+    deadweight_mt: dwt,
+    fuel_type: fuelType,
+    ballast_speed_knts: ballastSpeed,
+    ballast_vlsfo_mt_day: ballastVLSFO,
+    laden_speed_knts: ladenSpeed,
+    laden_vlsfo_mt_day: ladenVLSFO,
+    sector: sector,
+  };
+
   // State to store the emissions factor
-  const [emissionsFactor, setEmissionsFactor] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch the emissions factor when the component mounts or fuelType changes
   useEffect(() => {
-    const getEmissionsFactor = async () => {
+    const postVesselData = async () => {
       try {
-        const factor = await fetchFuel(fuelType);
-        setEmissionsFactor(factor);
+        const status = await postVessel(vessel_data);
+        if (status !== "OK") throw error;
         setLoading(false);
       } catch (err) {
-        setError("Error fetching fuel data");
+        setError("Error posting vessel's data");
         setLoading(false);
       }
     };
-    getEmissionsFactor();
-  }, [fuelType]);
+    postVesselData();
+  }, [vessel_data]);
 
   if (loading) return <div>Loading...</div>; // Show loading state while fetching data
   if (error) return <div>{error}</div>; // Show error if fetch fails
 
   // Retrieve emissions factor & default fuel cost
-  // const fuelData = emissionsFactors[fuelType as keyof typeof emissionsFactors];
-  // const emissionsFactor = fetchFuel(fuelType);
+  const fuelData = emissionsFactors[fuelType as keyof typeof emissionsFactors];
+  const emissionsFactor = fuelData.factor;
   // const defaultFuelCost = fuelData.cost;
 
   // Adjust consumption based on DWT (assuming 50,000 DWT is the baseline)

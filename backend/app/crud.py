@@ -158,7 +158,7 @@ def get_all_fuels(db: db_dependency):
 
 
 def get_fuel(fuel_name: str, db: db_dependency):
-    fuel = db.query(Fuel).filter(Fuel.name == fuel_name).first()
+    fuel = db.query(Fuel).filter(Fuel.fuel_type == fuel_name).first()
 
     if fuel is None:
         raise HTTPException(status_code=404, detail="Ship not found")
