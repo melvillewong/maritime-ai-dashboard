@@ -14,6 +14,7 @@ from .crud import (
     create_ship,
     create_ship_trip,
     create_trip,
+    delete_all_ships,
     delete_ship,
     get_all_fuels,
     get_all_ships,
@@ -55,9 +56,14 @@ def read_ship(ship_id: int, db: db_dependency):
     return get_ship(ship_id=ship_id, db=db)
 
 
-@app.delete("/vessels")
+@app.delete("/vessels/{ship_id}")
 def remove_ship(ship_id: int, db: db_dependency):
     return delete_ship(ship_id=ship_id, db=db)
+
+
+@app.delete("/vessels")
+def remove_all_ships(db: db_dependency):
+    return delete_all_ships(db=db)
 
 
 @app.post("/routes", response_model=RouteResponse)
