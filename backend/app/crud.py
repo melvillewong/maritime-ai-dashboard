@@ -46,6 +46,17 @@ def get_ship(ship_id: int, db: db_dependency):
     return ship
 
 
+def delete_ship(ship_id: int, db: db_dependency):
+    ship = db.query(Vessel).filter(Vessel.id == ship_id).first()
+
+    if ship is None:
+        raise HTTPException(status_code=404, detail="Ship not found")
+
+    db.delete(ship)
+    db.commit()
+    return {"Deletion": "Successful"}
+
+
 def create_trip(trip: RouteCreate, db: db_dependency):
     db_trip = Route(port_1=trip.port_1, port_2=trip.port_2, distance=trip.distance)
     db.add(db_trip)
