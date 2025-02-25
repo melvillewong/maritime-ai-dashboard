@@ -1,46 +1,60 @@
 from pydantic import BaseModel
 
 
-class ShipCreate(BaseModel):
-    vessel_type: str
+class VesselCreate(BaseModel):
+    deadweight_mt: float
     fuel_type: str
-    speed: float
+    ballast_speed_knts: float
+    ballast_vlsfo_mt_day: float
+    laden_speed_knts: float
+    laden_vlsfo_mt_day: float
+    sector: str
 
 
-class ShipResponse(BaseModel):
+class VesselResponse(BaseModel):
     id: int
-    vessel_type: str
+    deadweight_mt: float
     fuel_type: str
-    speed: float
+    ballast_speed_knts: float
+    ballast_vlsfo_mt_day: float
+    laden_speed_knts: float
+    laden_vlsfo_mt_day: float
+    sector: str
 
 
-class TripCreate(BaseModel):
-    start_port: str
-    end_port: str
+class RouteCreate(BaseModel):
+    port_1: str
+    port_2: str
     distance: float
 
 
-class TripResponse(BaseModel):
+class RouteResponse(BaseModel):
     id: int
-    start_port: str
-    end_port: str
+    port_1: str
+    port_2: str
     distance: float
 
 
 class ShipTripCreate(BaseModel):
-    ship_id: int
-    trip_id: int
+    vessel_id: int
+    route_id: int
 
 
 class ShipTripResponse(BaseModel):
-    ship_id: int
-    trip_id: int
-    time: float
-    fuel_consumed: float
-    fuel_consumed_inc_weather: float
+    vessel_id: int
+    route_id: int
+    b_fuel_consumed: float
+    l_fuel_consumed: float
+    return_fuel_consumed: float
+    b_emission: float
+    l_emission: float
+    return_emission: float
+    b_emission_inc_weather: float
+    l_emission_inc_weather: float
+    return_emission_inc_weather: float
 
 
 class FuelResponse(BaseModel):
-    name: str
+    fuel_type: str
     co2_factor: float
     cost: float

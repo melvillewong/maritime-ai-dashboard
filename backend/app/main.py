@@ -3,10 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from .base_model import (
     FuelResponse,
-    ShipCreate,
-    ShipResponse,
-    TripCreate,
-    TripResponse,
+    VesselCreate,
+    VesselResponse,
+    RouteCreate,
+    RouteResponse,
     ShipTripCreate,
     ShipTripResponse,
 )
@@ -39,23 +39,23 @@ app.add_middleware(
 )
 
 
-@app.post("/ships", response_model=ShipResponse)
-def add_ship(ship: ShipCreate, db: db_dependency):
+@app.post("/vessels", response_model=VesselResponse)
+def add_ship(ship: VesselCreate, db: db_dependency):
     return create_ship(ship=ship, db=db)
 
 
-@app.get("/ships", response_model=List[ShipResponse])
+@app.get("/vessels", response_model=List[VesselResponse])
 def read_all_ships(db: db_dependency):
     return get_all_ships(db=db)
 
 
-@app.get("/ships/{ship_id}", response_model=ShipResponse)
+@app.get("/vessels/{ship_id}", response_model=VesselResponse)
 def read_ship(ship_id: int, db: db_dependency):
     return get_ship(ship_id=ship_id, db=db)
 
 
-@app.post("/trips", response_model=TripResponse)
-def add_trip(trip: TripCreate, db: db_dependency):
+@app.post("/routes", response_model=RouteResponse)
+def add_trip(trip: RouteCreate, db: db_dependency):
     return create_trip(trip=trip, db=db)
 
 
@@ -64,7 +64,7 @@ def add_ship_trip(ship_trip: ShipTripCreate, db: db_dependency):
     return create_ship_trip(ship_trip=ship_trip, db=db)
 
 
-@app.get("/trips", response_model=List[TripResponse])
+@app.get("/routes", response_model=List[RouteResponse])
 def read_all_trips(db: db_dependency):
     return get_all_trips(db=db)
 

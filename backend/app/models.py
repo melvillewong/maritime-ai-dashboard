@@ -3,45 +3,60 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 
 
-class Ship(Base):
-    __tablename__ = "ships"
+class Vessel(Base):
+    __tablename__ = "vessels"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    vessel_type: Mapped[str] = mapped_column(String, nullable=False)
-    fuel_type: Mapped[str] = mapped_column(String, nullable=False)
-    speed: Mapped[float] = mapped_column(Float, nullable=False)
+    deadweight_mt: Mapped[float] = mapped_column(Float, nullable=False)
+    fuel_type: Mapped[str] = mapped_column(
+        ForeignKey("fuels.fuel_type"), nullable=False
+    )
+    ballast_speed_knts: Mapped[float] = mapped_column(Float, nullable=False)
+    ballast_vlsfo_mt_day: Mapped[float] = mapped_column(Float, nullable=False)
+    laden_speed_knts: Mapped[float] = mapped_column(Float, nullable=False)
+    laden_vlsfo_mt_day: Mapped[float] = mapped_column(Float, nullable=False)
+    sector: Mapped[str] = mapped_column(String, nullable=False)
 
-    trips = relationship("ShipTrip", back_populates="ship")
+    routes = relationship("ShipTrip", back_populates="vessel")
+    fuel = relationship("Fuel", back_populates="vessels")
 
 
-class Trip(Base):
-    __tablename__ = "trips"
+class Route(Base):
+    __tablename__ = "routes"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    start_port: Mapped[str] = mapped_column(String, nullable=False)
-    end_port: Mapped[str] = mapped_column(String, nullable=False)
-    distance: Mapped[float] = mapped_column(Integer, nullable=False)
+    port_1: Mapped[str] = mapped_column(String, nullable=False)
+    port_2: Mapped[str] = mapped_column(String, nullable=False)
+    distance: Mapped[float] = mapped_column(Float, nullable=False)
 
-    ships = relationship("ShipTrip", back_populates="trip")
+    vessels = relationship("ShipTrip", back_populates="route")
 
 
 class ShipTrip(Base):
     __tablename__ = "ship_trips"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    ship_id: Mapped[int] = mapped_column(ForeignKey("ships.id"), nullable=False)
-    trip_id: Mapped[int] = mapped_column(ForeignKey("trips.id"), nullable=False)
-    time: Mapped[float] = mapped_column(Float, nullable=False)
-    fuel_consumed: Mapped[float] = mapped_column(Float, nullable=False)
-    fuel_consumed_inc_weather: Mapped[float] = mapped_column(Float, nullable=False)
+    vessel_id: Mapped[int] = mapped_column(ForeignKey("vessels.id"), nullable=False)
+    route_id: Mapped[int] = mapped_column(ForeignKey("routes.id"), nullable=False)
+    b_fuel_consumed: Mapped[float] = mapped_column(Float, nullable=False)
+    l_fuel_consumed: Mapped[float] = mapped_column(Float, nullable=False)
+    return_fuel_consumed: Mapped[float] = mapped_column(Float, nullable=False)
+    b_emission: Mapped[float] = mapped_column(Float, nullable=False)
+    l_emission: Mapped[float] = mapped_column(Float, nullable=False)
+    return_emission: Mapped[float] = mapped_column(Float, nullable=False)
+    b_emission_inc_weather: Mapped[float] = mapped_column(Float, nullable=False)
+    l_emission_inc_weather: Mapped[float] = mapped_column(Float, nullable=False)
+    return_emission_inc_weather: Mapped[float] = mapped_column(Float, nullable=False)
 
-    ship = relationship("Ship", back_populates="trips")
-    trip = relationship("Trip", back_populates="ships")
+    vessel = relationship("Vessel", back_populates="routes")
+    route = relationship("Route", back_populates="vessels")
 
 
 class Fuel(Base):
     __tablename__ = "fuels"
 
-    name: Mapped[str] = mapped_column(String, primary_key=True)
+    fuel_type: Mapped[str] = mapped_column(String, primary_key=True)
     co2_factor: Mapped[float] = mapped_column(Float, nullable=False)
     cost: Mapped[float] = mapped_column(Float, nullable=True)
+
+    vessels = relationship("Vessel", back_populates="fuel")

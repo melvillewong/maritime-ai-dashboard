@@ -18,7 +18,6 @@ const fetchFuel = async (fuelName: string): Promise<number> => {
   try {
     const res = await api.get(`/fuels/${fuelName}`);
     const result = parseFloat(res.data.co2_factor);
-    console.log(typeof result);
     return result;
   } catch (error) {
     throw new Error("Fuel not found " + error);
