@@ -1,0 +1,73 @@
+/* Overall container */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  font-family: 'Arial', sans-serif;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  padding-bottom: 20px;
+}
+
+/* Form fields */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+}
+
+.input-field {
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Button */
+button {
+  background-color: lightgreen;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: lightgreen;
+}
+
+/* Result section */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Results */
+.result-section p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Section headings */
+h2, h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
