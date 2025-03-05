@@ -12,16 +12,32 @@ import {
 // Sample fuel types and sectors
 const fuelTypes = [
   { label: "VLSFO", value: "vlsfo" },
-  { label: "MGO", value: "mgo" },
-  { label: "LNG Stream Turbine", value: "lngst" },
+  { label: "MDO & MGO ISO 8217 (Grades DMX to DMB)", value: "mgo" },
   { label: "Baltic Standard", value: "bs" },
-  { label: "HFO", value: "hfo" },
+  { label: "HFO ISO 8217 (Grades RME to RMK)", value: "hfo" },
   { label: "LSFO Crude", value: "lsfoc" },
-  { label: "LNG Diesel", value: "lngd" },
-  { label: "LNG Otto", value: "lngo" },
-  { label: "LPG", value: "lpg" },
-  { label: "Methanol", value: "methanol" },
+  { label: "LNG Diesel (Dual Fuel Slow Speed)", value: "lng_diesel" },
+  { label: "LNG Otto (Dual Fuel Medium Speed)", value: "lng_otto_medium" },
+  { label: "LPG (Propane)", value: "lpg" },
+  {label: "LSFO Blend", value: "lsfo_blend" },
+  {label: "LNG Otto (Dual Fuel Slow Speed)", value: "lng_otto_slow" },
+  {label: "ULSFO", value: "ulsfo" },
+  {label: "LFO ISO 8217 (Grades RMA to RMD)", value: "lfo" },
+  {label: "Hydrogen (Grey - From Natural Gas)", value: "hydrogen" },
+  {label: "Ammonia (Grey - From Natural Gas)", value: "ammonia" },
+
+
+
+
+
+
+
+
+
+
+
 ];
+
 
 const sectors = [
   { label: "Dry Physical", value: "dp" },
@@ -35,7 +51,7 @@ const FuelInput: React.FC<{ onSubmit: (vesselData: any) => void }> = ({
   onSubmit,
 }) => {
   const [dwt, setDwt] = useState<number>(50000);
-  const [ballastSpeed, setBallastSpeed] = useState<number>(11);
+  const [ballastSpeed, setBallastSpeed] = useState<number>(12);
   const [ballastVLSFO, setBallastVLSFO] = useState<number>(16.8);
   const [ladenSpeed, setLadenSpeed] = useState<number>(11);
   const [ladenVLSFO, setLadenVLSFO] = useState<number>(18);

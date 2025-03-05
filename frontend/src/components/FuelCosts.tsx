@@ -12,14 +12,12 @@ const fuelCostsData = [
     { name: "ULSFO", price: 650 },
     { name: "LNG Diesel (Dual Fuel Slow Speed)", price: 750 },
     { name: "VLSFO", price: 600 },
-    { name: "LNG LBSI", price: 750 },
     { name: "LFO ISO 8217 (Grades RMA to RMD)", price: 490 },
-    { name: "LNG Steam Turbine", price: 750 },
-    { name: "LPG (Butane)", price: 690 },
-    { name: "H2 (From Natural Gas)", price: 2000 },
     { name: "LPG (Propane)", price: 690 },
-    { name: "NH3 (From Natural Gas)", price: 1200 },
-    { name: "Methanol (From Natural Gas)", price: 1500 }
+
+    { name: "Hydrogen (Grey - From Natural Gas)", price: 2000 },
+    { name: "Ammonia (Grey - From Natural Gas)", price: 1200 },
+    { name: "Baltic Standard ", price: 600 }
 ];
 
 const FuelCosts: React.FC = () => {
